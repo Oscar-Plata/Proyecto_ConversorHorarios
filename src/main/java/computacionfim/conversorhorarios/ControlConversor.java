@@ -19,21 +19,27 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ControlConversor {
-    
+    //TAMAÑOS DELA CUADRICULA 
     final int MaxCharLinea = 132;
     final int MaxCharHora = 8;
     final int MaxCharDesc = 70;
     final int MaxLineaHeader = 13;
     final int MaxLineaMateria = 3;
     final int MaxLineaHoja = 66;
+    //ALMACENAMIENTO
     public ArrayList<String> lineas = new ArrayList<>();    //para formato en txt (no se usa BORRAR)
     public ArrayList<Materia> materias = new ArrayList<>();
-    
+    //CONTROL DE CONVERSION
     private int numPagActual=0;
-
-//ES UN GRUPO POR HOJA
-//MARCO Antonio Reyna Vargas alumno de 9veno ya convirtio archivos con la subdirectora
-//El Profe jorge ibarra tambien puede saber de esto.
+    private int grupoActual;
+    private int materiaActual;
+    
+    /*Notas
+    ES UN GRUPO POR HOJA
+    MARCO Antonio Reyna Vargas alumno de 9veno ya convirtio archivos con la subdirectora
+    El Profe jorge ibarra tambien puede saber de esto.
+    */
+    
     public ControlConversor() {
     }
 
@@ -87,9 +93,37 @@ public class ControlConversor {
         
         return "Taco";
     }
-    
+    //Escribir una linea punteada en todo el renglon
     public String linea(){
         return " ----------------------------------------------------------------------------------------------------------------------------------";
+    }
+    
+    //Obtener la Hora Actual
+    public String hora(){
+        LocalDateTime ahora = LocalDateTime.now();
+        return String.valueOf(ahora.getHour())+":"+String.valueOf(ahora.getMinute())+":"+String.valueOf(ahora.getSecond());
+    }
+    //Obtener la Fecha Actual
+    public String fecha(){
+        LocalDateTime ahora = LocalDateTime.now();
+        String fechaStr=ahora.getDayOfMonth()+"/";
+        switch(ahora.getMonthValue()){
+            default:
+            case 1: fechaStr+="Ene"; break;
+            case 2: fechaStr+="Feb";break;
+            case 3: fechaStr+="Mar";break;
+            case 4: fechaStr+="Abr";break;
+            case 5: fechaStr+="May";break;
+            case 6: fechaStr+="Jun";break;
+            case 7: fechaStr+="Jul";break;
+            case 8: fechaStr+="Ago";break;
+            case 9: fechaStr+="Sep";break;
+            case 10: fechaStr+="Oct";break;
+            case 11: fechaStr+="Nov";break;
+            case 12: fechaStr+="Dic";break;
+        }
+        fechaStr+="/"+ahora.getYear();
+        return fechaStr;
     }
     
     //Para formatos en TXT ya no se usa
