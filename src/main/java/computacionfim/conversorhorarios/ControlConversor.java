@@ -19,54 +19,52 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ControlConversor {
-
-    private int MaxCharLinea = 132;
-    private int MaxCharHora = 8;
-    private int MaxCharDesc = 70;
-    private int MaxLineaHeader = 13;
-    private int MaxLineaMateria = 3;
-    private int MaxLineaHoja = 66;
-    public ArrayList<String> lineas = new ArrayList<>();
-    public ArrayList<Materia> materias=new ArrayList<>();
     
-//ES UN GRUPO POR HOJA
+    final int MaxCharLinea = 132;
+    final int MaxCharHora = 8;
+    final int MaxCharDesc = 70;
+    final int MaxLineaHeader = 13;
+    final int MaxLineaMateria = 3;
+    final int MaxLineaHoja = 66;
+    public ArrayList<String> lineas = new ArrayList<>();    //para formato en txt (no se usa BORRAR)
+    public ArrayList<Materia> materias = new ArrayList<>();
+    
+    private int numPagActual=0;
 
+//ES UN GRUPO POR HOJA
 //MARCO Antonio Reyna Vargas alumno de 9veno ya convirtio archivos con la subdirectora
 //El Profe jorge ibarra tambien puede saber de esto.
     public ControlConversor() {
     }
 
-
     public boolean leerXLS(File file) {
-        
+
         //VERIFICAR EXTENSION DEL ARCHIVO
         String[] nombreExtension = file.getName().split("\\.");
-        if (!(nombreExtension[1].equalsIgnoreCase("xlsx")||nombreExtension[1].equalsIgnoreCase("xls"))) {
+        if (!(nombreExtension[1].equalsIgnoreCase("xlsx") || nombreExtension[1].equalsIgnoreCase("xls"))) {
             return false;
         }
         System.out.println(">> Formato correcto");
+        //LEER ARCHIVO DE EXCEL
         try {
             FileInputStream fileStream = new FileInputStream(file);
             Workbook libroExcel = new XSSFWorkbook(fileStream);
             XSSFSheet hojaExcel = (XSSFSheet) libroExcel.getSheetAt(0);
             Iterator<Row> lineaIterator = hojaExcel.iterator();
-
-            while(lineaIterator.hasNext())
-//            for (int i = 0; i < 10; i++)
-            {
-                Materia lineaMateria=new Materia();
+            //RECORRER ARCHIVO
+            //            for (int i = 0; i < 10; i++)
+            while (lineaIterator.hasNext()) {
+                Materia lineaMateria = new Materia();
                 Row linea = lineaIterator.next();
                 Iterator<Cell> celdaIterator = linea.cellIterator();
                 while (celdaIterator.hasNext()) {
                     Cell celda = celdaIterator.next();
-                    lineaMateria.llenarCelda(celda.getStringCellValue().trim());
-                    //System.out.print(celda.getStringCellValue()+"\t");
+                    lineaMateria.llenarCelda(celda.getStringCellValue().trim());    //Almacena la info en una celda de materia
                 }
-                lineaMateria.llenarMateria();
-                materias.add(lineaMateria);
-                //System.out.println("");
+                lineaMateria.llenarMateria();                                       //Llena los campos de informacion con las celdas
+                materias.add(lineaMateria);                                         //Agrega La materia a la coleccion
             }
-            materias.remove(0);
+            materias.remove(0);                                                     //Elimina el encabezado de la tabla de excel
             verMaterias();
 
         } catch (FileNotFoundException ex) {
@@ -77,13 +75,24 @@ public class ControlConversor {
 
         return true;
     }
-    public void verMaterias(){
-        System.out.println("Cantidad de Materias:"+materias.size());
-        for (int i = 0; i < materias.size()-1; i++) {
+
+    public void verMaterias() {
+        System.out.println("Cantidad de Materias:" + materias.size());
+        for (int i = 0; i < materias.size() - 1; i++) {
             System.out.println(materias.get(i));
         }
     }
-
+    
+    public String crearEncabezado(){
+        
+        return "Taco";
+    }
+    
+    public String linea(){
+        return " ----------------------------------------------------------------------------------------------------------------------------------";
+    }
+    
+    //Para formatos en TXT ya no se usa
     public boolean leerTxt(String path, String name, File file) {
         //VERIFICAR EXTENSION DEL ARCHIVO
         String[] nombreExtension = name.split("\\.");
@@ -106,7 +115,6 @@ public class ControlConversor {
         } catch (IOException ex) {
             System.out.println(">> Error en lectura linea");
         }
-
         imprimirLineas();
         SepararLineas();
         return true;
