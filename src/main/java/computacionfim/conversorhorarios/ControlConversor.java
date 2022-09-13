@@ -33,11 +33,12 @@ public class ControlConversor {
     public ArrayList<Materia> materias = new ArrayList<>();
     //CONTROL DE CONVERSION
     private int numPagActual = 0;
-    private int grupoActual;
-    private int materiaActual;
+    private int grupoActual=000;
     private String planActual;
     private String carreraActual;
     private int numCarreraActual;
+    private int numMateriaActual;
+    private Materia materiaActual;
 
     /*Notas
     ES UN GRUPO POR HOJA
@@ -48,7 +49,8 @@ public class ControlConversor {
     }
 
     public boolean leerXLS(File file) {
-
+        materias.clear();
+        lineas.clear();
         //VERIFICAR EXTENSION DEL ARCHIVO
         String[] nombreExtension = file.getName().split("\\.");
         if (!(nombreExtension[1].equalsIgnoreCase("xlsx") || nombreExtension[1].equalsIgnoreCase("xls"))) {
@@ -75,7 +77,8 @@ public class ControlConversor {
                 materias.add(lineaMateria);                                         //Agrega La materia a la coleccion
             }
             materias.remove(0);                                                     //Elimina el encabezado de la tabla de excel
-            verMaterias();
+            //verMaterias();
+            convertir();
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ControlConversor.class.getName()).log(Level.SEVERE, null, ex);
@@ -90,20 +93,65 @@ public class ControlConversor {
         System.out.println("Cantidad de Materias:" + materias.size());
         for (int i = 0; i < materias.size() - 1; i++) {
             crearEncabezado();
-               //System.out.println(materias.get(i));
+            System.out.println(materias.get(i));
+        }
+    }
+    
+    public void convertir(){
+        String[] lineasEncAux= new String[13];
+        materiaActual=materias.get(0);
+        
+        numPagActual=1;
+        grupoActual=Integer.valueOf(materiaActual.getGrupo());
+        planActual=materiaActual.getPlanEstudios();
+        carreraActual=materiaActual.getNombrePE();
+        numCarreraActual=Integer.valueOf(materiaActual.getNumeroPE());
+        numMateriaActual=0;
+        
+        int contadorMateriasHoja=1;
+        lineasEncAux=crearEncabezado();
+        
+        System.out.println(materiaActual);
+        
+        for (int i = 1; i < materias.size()-1; i++) {
+            numMateriaActual=i;
+            materiaActual=materias.get(numMateriaActual);
+            
+            if(Integer.valueOf(materiaActual.getGrupo())==grupoActual){
+                System.out.println(materiaActual);
+                contadorMateriasHoja++;
+                if(contadorMateriasHoja>MaxMateriaHoja){
+                    //salto de hoja
+                    numPagActual++;
+                    crearEncabezado();
+                    System.out.println(materiaActual);
+                    contadorMateriasHoja=1;
+                }
+            }else{
+                //salto de hoja
+                numPagActual++;
+                grupoActual=Integer.valueOf(materiaActual.getGrupo());
+                planActual=materiaActual.getPlanEstudios();
+                carreraActual=materiaActual.getNombrePE();
+                numCarreraActual=Integer.valueOf(materiaActual.getNumeroPE());
+                contadorMateriasHoja=1;
+                crearEncabezado();
+                System.out.println(materiaActual);
+            }
         }
     }
 
     public String[] crearEncabezado() {
-        String[] encabezado = new String[13];
+        String[] encabezado = new String[MaxLineaHeader];
         encabezado[0] = "\n";
         encabezado[1] = " " + hora() + "                                    UNIVERSIDAD AUTONOMA DE BAJA CALIFORNIA                                    " + fecha() + "\n";
         encabezado[2] = "                                               COORDINACION GENERAL DE RECURSOS HUMANOS\n";
-        encabezado[3] = " RPLAN005                                           CUADRICULA DE HORARIOS                                                PAG.  " + numPagActual + "\n";
+        String paginaFTM=String.format("%3d", numPagActual);
+        encabezado[3] = " RPLAN005                                           CUADRICULA DE HORARIOS                                                PAG.  " + paginaFTM + "\n";
         encabezado[4] = "                                                        Periodo :" + periodoActual() + "\n";
         encabezado[5] = "\n";
         String grupoFTM=String.format("%03d", grupoActual);
-        encabezado[6] = " UNIDAD ACADEMICA: 105 FACULTAD DE INGENIERIA MXLI                                                               GRUPO: '" + grupoFTM + " '   '"+"\n";
+        encabezado[6] = " UNIDAD ACADEMICA: 105 FACULTAD DE INGENIERIA MXLI                                                               GRUPO: '" + grupoFTM + "' '   '"+"\n";
         String carreraFTM=String.format("%03d", numCarreraActual);
         encabezado[7] = " CARRERA: "+carreraFTM+"          "+carreraActual+"\n";
         encabezado[8]=" PLAN DE ESTUDIOS: "+planActual+"\n";
@@ -111,7 +159,7 @@ public class ControlConversor {
         encabezado[10]=" CVE.ASIGNAT.       D E S C R I P C I O N                 CAP TPO     LUNES   MARTES  MIERCO  JUEVES  VIERNES  SABADO  DOMINGO  E/S\n";
         encabezado[11]=" No.CONTROL             M A E S T R O          EDIF SALON ASG SGP\n";
         encabezado[12]=linea()+"\n";
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < MaxLineaHeader; i++) {
             System.out.print(encabezado[i]);
         }
         return encabezado;
