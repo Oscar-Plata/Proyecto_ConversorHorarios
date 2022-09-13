@@ -20,6 +20,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ControlConversor {
 
+    private File archivo;
     //TAMAÑOS DELA CUADRICULA 
     final int MaxCharLinea = 132;
     final int MaxCharHora = 8;
@@ -33,7 +34,7 @@ public class ControlConversor {
     public ArrayList<Materia> materias = new ArrayList<>();
     //CONTROL DE CONVERSION
     private int numPagActual = 0;
-    private int grupoActual=000;
+    private int grupoActual = 000;
     private String planActual;
     private String carreraActual;
     private int numCarreraActual;
@@ -49,6 +50,10 @@ public class ControlConversor {
     }
 
     public boolean leerXLS(File file) {
+        if(file==null){
+            return false;
+        }
+        archivo = file;
         materias.clear();
         lineas.clear();
         //VERIFICAR EXTENSION DEL ARCHIVO
@@ -79,6 +84,7 @@ public class ControlConversor {
             materias.remove(0);                                                     //Elimina el encabezado de la tabla de excel
             //verMaterias();
             convertir();
+            generarArchivo();
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ControlConversor.class.getName()).log(Level.SEVERE, null, ex);
@@ -89,56 +95,76 @@ public class ControlConversor {
         return true;
     }
 
-    public void verMaterias() {
-        System.out.println("Cantidad de Materias:" + materias.size());
-        for (int i = 0; i < materias.size() - 1; i++) {
-            crearEncabezado();
-            System.out.println(materias.get(i));
-        }
-        
-    }
-    
-    public void convertir(){
-        String[] lineasEncAux= new String[13];
-        materiaActual=materias.get(0);
-        
-        numPagActual=1;
-        grupoActual=Integer.valueOf(materiaActual.getGrupo());
-        planActual=materiaActual.getPlanEstudios();
-        carreraActual=materiaActual.getNombrePE();
-        numCarreraActual=Integer.valueOf(materiaActual.getNumeroPE());
-        numMateriaActual=0;
-        
-        int contadorMateriasHoja=1;
-        lineasEncAux=crearEncabezado();
-        
+    public void convertir() {
+        //String[] lineasEncAux = new String[13];
+        materiaActual = materias.get(0);
+        int saltos = 0;
+
+        numPagActual = 1;
+        grupoActual = Integer.valueOf(materiaActual.getGrupo());
+        planActual = materiaActual.getPlanEstudios();
+        carreraActual = materiaActual.getNombrePE();
+        numCarreraActual = Integer.valueOf(materiaActual.getNumeroPE());
+        numMateriaActual = 0;
+
+        int contadorMateriasHoja = 1;
+        guardarLineas(crearEncabezado());
+        //guardarLineas(crearMateria());
         System.out.println(materiaActual);
-        
-        for (int i = 1; i < materias.size()-1; i++) {
-            numMateriaActual=i;
-            materiaActual=materias.get(numMateriaActual);
-            
-            if(Integer.valueOf(materiaActual.getGrupo())==grupoActual){
+
+        for (int i = 1; i < materias.size() - 1; i++) {
+            numMateriaActual = i;
+            materiaActual = materias.get(numMateriaActual);
+
+            if (Integer.valueOf(materiaActual.getGrupo()) == grupoActual) {
                 System.out.println(materiaActual);
+                //guardarLineas(crearMateria());
                 contadorMateriasHoja++;
-                if(contadorMateriasHoja>MaxMateriaHoja){
+                if (contadorMateriasHoja > MaxMateriaHoja) {
                     //salto de hoja
+                    saltos = 13;
+                    guardarLineas(saltoDeHoja(saltos));
                     numPagActual++;
-                    crearEncabezado();
+                    guardarLineas(crearEncabezado());
                     System.out.println(materiaActual);
-                    contadorMateriasHoja=1;
+                    //guardarLineas(crearMateria());
+                    contadorMateriasHoja = 1;
                 }
-            }else{
-                //salto de hoja
+            } else {
+                saltos = MaxCharLinea - (MaxLineaHeader + (contadorMateriasHoja * 4));
+                guardarLineas(saltoDeHoja(saltos));
                 numPagActual++;
-                grupoActual=Integer.valueOf(materiaActual.getGrupo());
-                planActual=materiaActual.getPlanEstudios();
-                carreraActual=materiaActual.getNombrePE();
-                numCarreraActual=Integer.valueOf(materiaActual.getNumeroPE());
-                contadorMateriasHoja=1;
+                grupoActual = Integer.valueOf(materiaActual.getGrupo());
+                planActual = materiaActual.getPlanEstudios();
+                carreraActual = materiaActual.getNombrePE();
+                numCarreraActual = Integer.valueOf(materiaActual.getNumeroPE());
+                contadorMateriasHoja = 1;
                 crearEncabezado();
                 System.out.println(materiaActual);
             }
+        }
+    }
+
+    public void generarArchivo() {
+        String[] nombreExtension = archivo.getName().split("\\.");
+        String nomGuardado = nombreExtension[0] + "_MODIFICADO.txt";
+        String[] dirAux = archivo.getPath().split(archivo.getName());
+        String dirNueva = dirAux[0] + nomGuardado;
+        System.out.println(dirNueva);
+        File fichero = new File(dirNueva);
+        if (fichero.exists()) {
+            System.out.println("Ya existe el archivo: " + nomGuardado);
+        } else {
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(dirNueva));
+                for (int i = 0; i < lineas.size(); i++) {
+                    bw.write(lineas.get(i));
+                }
+                bw.close();
+            } catch (IOException ex) {
+                Logger.getLogger(ControlConversor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
     }
 
@@ -147,25 +173,26 @@ public class ControlConversor {
         encabezado[0] = "\n";
         encabezado[1] = " " + hora() + "                                    UNIVERSIDAD AUTONOMA DE BAJA CALIFORNIA                                    " + fecha() + "\n";
         encabezado[2] = "                                               COORDINACION GENERAL DE RECURSOS HUMANOS\n";
-        String paginaFTM=String.format("%3d", numPagActual);
+        String paginaFTM = String.format("%3d", numPagActual);
         encabezado[3] = " RPLAN005                                           CUADRICULA DE HORARIOS                                                PAG.  " + paginaFTM + "\n";
-        encabezado[4] = "                                                        Periodo :" + periodoActual() + "\n";
+        encabezado[4] = "                                                        Periodo : f" + periodoActual() + "\n";
         encabezado[5] = "\n";
-        String grupoFTM=String.format("%03d", grupoActual);
-        encabezado[6] = " UNIDAD ACADEMICA: 105 FACULTAD DE INGENIERIA MXLI                                                               GRUPO: '" + grupoFTM + "' '   '"+"\n";
-        String carreraFTM=String.format("%03d", numCarreraActual);
-        encabezado[7] = " CARRERA: "+carreraFTM+"          "+carreraActual+"\n";
-        encabezado[8]=" PLAN DE ESTUDIOS: "+planActual+"\n";
-        encabezado[9]=linea()+"\n";
-        encabezado[10]=" CVE.ASIGNAT.       D E S C R I P C I O N                 CAP TPO     LUNES   MARTES  MIERCO  JUEVES  VIERNES  SABADO  DOMINGO  E/S\n";
-        encabezado[11]=" No.CONTROL             M A E S T R O          EDIF SALON ASG SGP\n";
-        encabezado[12]=linea()+"\n";
+        String grupoFTM = String.format("%03d", grupoActual);
+        encabezado[6] = " UNIDAD ACADEMICA: 105 FACULTAD DE INGENIERIA MXLI                                                               GRUPO: '" + grupoFTM + "' '   '" + "\n";
+        String carreraFTM = String.format("%02d", numCarreraActual);
+        encabezado[7] = " CARRERA: " + carreraFTM + "           " + carreraActual + "\n";
+        encabezado[8] = " PLAN DE ESTUDIOS: " + planActual + "\n";
+        encabezado[9] = linea() + "\n";
+        encabezado[10] = " CVE.ASIGNAT.       D E S C R I P C I O N                 CAP TPO     LUNES   MARTES  MIERCO  JUEVES  VIERNES  SABADO  DOMINGO  E/S\n";
+        encabezado[11] = " No.CONTROL             M A E S T R O          EDIF SALON ASG SGP\n";
+        encabezado[12] = linea() + "\n";
         for (int i = 0; i < MaxLineaHeader; i++) {
             System.out.print(encabezado[i]);
         }
         return encabezado;
     }
-        public void crearMateria(){
+
+    public void crearMateria() {
         ArrayList<String> horas = new ArrayList<>();
         horas.add("07:00 - 18:00");
         horas.add("07:00 - 18:00");
@@ -174,49 +201,50 @@ public class ControlConversor {
         horas.add("07:00 - 18:00");
         horas.add("07:00 - 18:00");
         horas.add("07:00 - 18:00");
-        for(int i = 0; i<horas.size();i++){
-            horas.set(i,acondicionarHoras(horas.get(i)));
+        for (int i = 0; i < horas.size(); i++) {
+            horas.set(i, acondicionarHoras(horas.get(i)));
         }
-        int numPE=33537;
+        int numPE = 33537;
         int claveAsig = 339;
         int numEmpleado = 031054;
         String nombreMateria = "Ecuaciones diferenciales";
-        String nombreProfesor=  "URIARTE DE LA CRUZ PABLO JESUS";
+        String nombreProfesor = "URIARTE DE LA CRUZ PABLO JESUS";
         int edificio = 3;
         int salon = 505;
-        int capacidad=40;
+        int capacidad = 40;
         char tipo = 'C';
-        String subgrupo ="1";
-        String [] textoMateria = new String[3];
-        textoMateria[0] = espacios(69)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|\n";
-        textoMateria[1] =espacios(6)+numPE+espacios(2)+nombreMateria;
-        while(textoMateria[1].length()<40){
-            textoMateria[1]+=" ";
+        String subgrupo = "1";
+        String[] textoMateria = new String[3];
+        textoMateria[0] = espacios(69) + "|" + espacios(7) + "|" + espacios(7) + "|" + espacios(7) + "|" + espacios(7) + "|" + espacios(7) + "|" + espacios(7) + "|" + espacios(7) + "|\n";
+        textoMateria[1] = espacios(6) + numPE + espacios(2) + nombreMateria;
+        while (textoMateria[1].length() < 40) {
+            textoMateria[1] += " ";
         }
-        textoMateria[1] = capacidad+espacios(2)+tipo+espacios(5)+"| "+horas.get(0).split("-")[0]+" | "+horas.get(1).split("-")[0]+" | "+horas.get(2).split("-")[0]+" | "+horas.get(3).split("-")[0]+" | "+horas.get(4).split("-")[0]+" | "+horas.get(5).split("-")[0]+" | "+horas.get(6).split("-")[0]+" | ";
-        textoMateria[2] = " "+claveAsig+espacios(5)+numEmpleado+" "+nombreProfesor.substring(0,29)+" "+edificio+espacios(4)+salon + espacios(13) + "| "+horas.get(0).split("-")[1]+" | "+horas.get(1).split("-")[1]+" | "+horas.get(2).split("-")[1]+" | "+horas.get(3).split("-")[1]+" | "+horas.get(4).split("-")[1]+" | "+horas.get(5).split("-")[1]+" | "+horas.get(6).split("-")[1]+" | ";
+        textoMateria[1] = capacidad + espacios(2) + tipo + espacios(5) + "| " + horas.get(0).split("-")[0] + " | " + horas.get(1).split("-")[0] + " | " + horas.get(2).split("-")[0] + " | " + horas.get(3).split("-")[0] + " | " + horas.get(4).split("-")[0] + " | " + horas.get(5).split("-")[0] + " | " + horas.get(6).split("-")[0] + " | ";
+        textoMateria[2] = " " + claveAsig + espacios(5) + numEmpleado + " " + nombreProfesor.substring(0, 29) + " " + edificio + espacios(4) + salon + espacios(13) + "| " + horas.get(0).split("-")[1] + " | " + horas.get(1).split("-")[1] + " | " + horas.get(2).split("-")[1] + " | " + horas.get(3).split("-")[1] + " | " + horas.get(4).split("-")[1] + " | " + horas.get(5).split("-")[1] + " | " + horas.get(6).split("-")[1] + " | ";
         System.out.println(textoMateria[0]);
         System.out.println(textoMateria[1]);
-                System.out.println(textoMateria[2]);
-                System.out.println(linea());
-    }
-    public String acondicionarHoras(String hora){
-        String primeraHora =hora.split("-")[0].trim();
-        String segundaHora = hora.split("-")[1].trim();
-        if(primeraHora.charAt(0)=='0'){
-            primeraHora=" "+primeraHora.substring(1,4);
-        }
-        if(segundaHora.charAt(0)=='0'){
-            segundaHora=" "+segundaHora.substring(1,4);
-    }
-        String horaGeneral = primeraHora+"-"+segundaHora;
-        return horaGeneral;
-        
-    }
-    public String acondicionarNombre(String nombre){
-        return nombre.substring(0,29);
+        System.out.println(textoMateria[2]);
+        System.out.println(linea());
     }
 
+    public String acondicionarHoras(String hora) {
+        String primeraHora = hora.split("-")[0].trim();
+        String segundaHora = hora.split("-")[1].trim();
+        if (primeraHora.charAt(0) == '0') {
+            primeraHora = " " + primeraHora.substring(1, 4);
+        }
+        if (segundaHora.charAt(0) == '0') {
+            segundaHora = " " + segundaHora.substring(1, 4);
+        }
+        String horaGeneral = primeraHora + "-" + segundaHora;
+        return horaGeneral;
+
+    }
+
+    public String acondicionarNombre(String nombre) {
+        return nombre.substring(0, 29);
+    }
 
     //Escribir una linea punteada en todo el renglon
     public String linea() {
@@ -295,32 +323,19 @@ public class ControlConversor {
         return periodo;
     }
 
-    //Para formatos en TXT ya no se usa
-    public boolean leerTxt(String path, String name, File file) {
-        //VERIFICAR EXTENSION DEL ARCHIVO
-        String[] nombreExtension = name.split("\\.");
-        if (!nombreExtension[1].equalsIgnoreCase("txt")) {
-            return false;
+    public void guardarLineas(String[] array) {
+        for (int i = 0; i < array.length; i++) {
+            lineas.add(array[i]);
         }
-        System.out.println(">> Formato correcto");
+    }
 
-        //LEER ARCHIVO
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                if (!(linea.isBlank() || linea.isEmpty())) {
-                    lineas.add(linea);
-                }
-            }
-        } catch (FileNotFoundException ex) {
-            System.out.println(">> Error en lectura archivo");
-        } catch (IOException ex) {
-            System.out.println(">> Error en lectura linea");
+    public String[] saltoDeHoja(int cantidad) {
+        String[] aux = new String[cantidad];
+        for (int i = 0; i < cantidad; i++) {
+            aux[i] = "\n";
+            System.out.println("\n");
         }
-        imprimirLineas();
-        SepararLineas();
-        return true;
+        return aux;
     }
 
     public void imprimirLineas() {
@@ -330,13 +345,11 @@ public class ControlConversor {
         }
     }
 
-    public void SepararLineas() {
-        for (int i = 0; i < 10; i++) {
-            String materia = lineas.get(i).trim();
-            String[] columnas = materia.split("[ ]{2,}");
-            System.out.println(columnas[0] + "\t");
-
+    public void verMaterias() {
+        System.out.println("Cantidad de Materias:" + materias.size());
+        for (int i = 0; i < materias.size() - 1; i++) {
+            crearEncabezado();
+            System.out.println(materias.get(i));
         }
-
     }
 }

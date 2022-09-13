@@ -5,6 +5,7 @@
  */
 package computacionfim.conversorhorarios;
 
+import java.awt.FileDialog;
 import java.io.File;
 
 /**
@@ -102,11 +103,13 @@ public class InterfazConversor extends javax.swing.JFrame {
     }//GEN-LAST:event_convertir_BTNActionPerformed
 
     private void selector_BTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selector_BTNActionPerformed
-        int estado = explorador_FC.showOpenDialog(this);
-            if (estado != explorador_FC.CANCEL_OPTION) {
-                mainFile= explorador_FC.getSelectedFile();
-                pathFile=mainFile.getAbsolutePath();
-                nameFile=mainFile.getName();
+        FileDialog FD= new java.awt.FileDialog(this,"Selecciona Archivo",FileDialog.LOAD);
+        FD.setVisible(true);
+        String selFile = FD.getFile();
+            if(selFile!=null){
+                pathFile=FD.getDirectory()+selFile;
+                mainFile= new File(pathFile);
+                nameFile=FD.getFile();
                 archivo_LBL.setText(nameFile);
                 directorio_LBL.setText(pathFile);
             }
