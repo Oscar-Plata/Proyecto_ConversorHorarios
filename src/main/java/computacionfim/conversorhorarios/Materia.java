@@ -43,7 +43,7 @@ public class Materia {
     private ArrayList<String> celdas;
 
     public Materia() {
-        celdas = new ArrayList<>();
+        celdas = new ArrayList<>();//Guardamos 
         celdasLlenadas = 0;
     }
 
