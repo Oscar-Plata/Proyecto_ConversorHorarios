@@ -19,6 +19,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ControlConversor {
+
     //TAMAÑOS DELA CUADRICULA 
     final int MaxCharLinea = 132;
     final int MaxCharHora = 8;
@@ -26,20 +27,23 @@ public class ControlConversor {
     final int MaxLineaHeader = 13;
     final int MaxLineaMateria = 3;
     final int MaxLineaHoja = 66;
+    final int MaxMateriaHoja = 10;
     //ALMACENAMIENTO
     public ArrayList<String> lineas = new ArrayList<>();    //para formato en txt (no se usa BORRAR)
     public ArrayList<Materia> materias = new ArrayList<>();
     //CONTROL DE CONVERSION
-    private int numPagActual=0;
+    private int numPagActual = 0;
     private int grupoActual;
     private int materiaActual;
-    
+    private String planActual;
+    private String carreraActual;
+    private int numCarreraActual;
+
     /*Notas
     ES UN GRUPO POR HOJA
     MARCO Antonio Reyna Vargas alumno de 9veno ya convirtio archivos con la subdirectora
     El Profe jorge ibarra tambien puede saber de esto.
-    */
-    
+     */
     public ControlConversor() {
     }
 
@@ -85,47 +89,111 @@ public class ControlConversor {
     public void verMaterias() {
         System.out.println("Cantidad de Materias:" + materias.size());
         for (int i = 0; i < materias.size() - 1; i++) {
-            System.out.println(materias.get(i));
+            crearEncabezado();
+               //System.out.println(materias.get(i));
         }
     }
-    
-    public String crearEncabezado(){
-        
-        return "Taco";
+
+    public String[] crearEncabezado() {
+        String[] encabezado = new String[13];
+        encabezado[0] = "\n";
+        encabezado[1] = " " + hora() + "                                    UNIVERSIDAD AUTONOMA DE BAJA CALIFORNIA                                    " + fecha() + "\n";
+        encabezado[2] = "                                               COORDINACION GENERAL DE RECURSOS HUMANOS\n";
+        encabezado[3] = " RPLAN005                                           CUADRICULA DE HORARIOS                                                PAG.  " + numPagActual + "\n";
+        encabezado[4] = "                                                        Periodo :" + periodoActual() + "\n";
+        encabezado[5] = "\n";
+        String grupoFTM=String.format("%03d", grupoActual);
+        encabezado[6] = " UNIDAD ACADEMICA: 105 FACULTAD DE INGENIERIA MXLI                                                               GRUPO: '" + grupoFTM + " '   '"+"\n";
+        String carreraFTM=String.format("%03d", numCarreraActual);
+        encabezado[7] = " CARRERA: "+carreraFTM+"          "+carreraActual+"\n";
+        encabezado[8]=" PLAN DE ESTUDIOS: "+planActual+"\n";
+        encabezado[9]=linea()+"\n";
+        encabezado[10]=" CVE.ASIGNAT.       D E S C R I P C I O N                 CAP TPO     LUNES   MARTES  MIERCO  JUEVES  VIERNES  SABADO  DOMINGO  E/S\n";
+        encabezado[11]=" No.CONTROL             M A E S T R O          EDIF SALON ASG SGP\n";
+        encabezado[12]=linea()+"\n";
+        for (int i = 0; i < 13; i++) {
+            System.out.print(encabezado[i]);
+        }
+        return encabezado;
     }
+
     //Escribir una linea punteada en todo el renglon
-    public String linea(){
+    public String linea() {
         return " ----------------------------------------------------------------------------------------------------------------------------------";
     }
-    
-    //Obtener la Hora Actual
-    public String hora(){
-        LocalDateTime ahora = LocalDateTime.now();
-        return String.valueOf(ahora.getHour())+":"+String.valueOf(ahora.getMinute())+":"+String.valueOf(ahora.getSecond());
-    }
-    //Obtener la Fecha Actual
-    public String fecha(){
-        LocalDateTime ahora = LocalDateTime.now();
-        String fechaStr=ahora.getDayOfMonth()+"/";
-        switch(ahora.getMonthValue()){
-            default:
-            case 1: fechaStr+="Ene"; break;
-            case 2: fechaStr+="Feb";break;
-            case 3: fechaStr+="Mar";break;
-            case 4: fechaStr+="Abr";break;
-            case 5: fechaStr+="May";break;
-            case 6: fechaStr+="Jun";break;
-            case 7: fechaStr+="Jul";break;
-            case 8: fechaStr+="Ago";break;
-            case 9: fechaStr+="Sep";break;
-            case 10: fechaStr+="Oct";break;
-            case 11: fechaStr+="Nov";break;
-            case 12: fechaStr+="Dic";break;
+
+    public String espacios(int cantidad) {
+        String auxiliar = "";
+        for (int i = 0; i < cantidad; i++) {
+            auxiliar += " ";
         }
-        fechaStr+="/"+ahora.getYear();
+        return auxiliar;
+    }
+
+    //Obtener la Hora Actual
+    public String hora() {
+        LocalDateTime ahora = LocalDateTime.now();
+        return String.valueOf(ahora.getHour()) + ":" + String.valueOf(ahora.getMinute()) + ":" + String.valueOf(ahora.getSecond());
+    }
+
+    //Obtener la Fecha Actual
+    public String fecha() {
+        LocalDateTime ahora = LocalDateTime.now();
+        String fechaStr = ahora.getDayOfMonth() + "/";
+        switch (ahora.getMonthValue()) {
+            default:
+            case 1:
+                fechaStr += "Ene";
+                break;
+            case 2:
+                fechaStr += "Feb";
+                break;
+            case 3:
+                fechaStr += "Mar";
+                break;
+            case 4:
+                fechaStr += "Abr";
+                break;
+            case 5:
+                fechaStr += "May";
+                break;
+            case 6:
+                fechaStr += "Jun";
+                break;
+            case 7:
+                fechaStr += "Jul";
+                break;
+            case 8:
+                fechaStr += "Ago";
+                break;
+            case 9:
+                fechaStr += "Sep";
+                break;
+            case 10:
+                fechaStr += "Oct";
+                break;
+            case 11:
+                fechaStr += "Nov";
+                break;
+            case 12:
+                fechaStr += "Dic";
+                break;
+        }
+        fechaStr += "/" + ahora.getYear();
         return fechaStr;
     }
-    
+
+    public String periodoActual() {
+        LocalDateTime ahora = LocalDateTime.now();
+        String periodo = ahora.getYear() + "-";
+        if (ahora.getMonthValue() >= 6) {
+            periodo += "2";
+        } else {
+            periodo += "1";
+        }
+        return periodo;
+    }
+
     //Para formatos en TXT ya no se usa
     public boolean leerTxt(String path, String name, File file) {
         //VERIFICAR EXTENSION DEL ARCHIVO
