@@ -225,7 +225,7 @@ public class ControlConversor {
             numEmpleado=cero+numEmpleado2;
         }
         String nombreMateria = materia.getNombreUA();
-        while(nombreMateria.length()<43) nombreMateria+=" ";
+        while(nombreMateria.length()<46) nombreMateria+=" ";
         
         String nombreProfesor=  materia.getNombreEmpleado();
         while(nombreProfesor.length()<31) nombreProfesor+=" ";
@@ -239,7 +239,7 @@ public class ControlConversor {
         if(subgrupo.equals("")) subgrupo = " ";
         String [] textoMateria = new String[3];
         textoMateria[0] = espacios(69)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|";
-        textoMateria[1] =espacios(6)+claveAsig+espacios(2)+nombreMateria.substring(0,30)+" ";
+        textoMateria[1] =espacios(6)+claveAsig+espacios(3)+nombreMateria;
         while(textoMateria[1].length()<59){
             textoMateria[1]+=" ";
         }
