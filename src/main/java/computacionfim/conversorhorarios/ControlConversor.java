@@ -40,6 +40,7 @@ public class ControlConversor {
     private int numCarreraActual;
     private int numMateriaActual;
     private Materia materiaActual;
+    private int copiasExistentes=1;
 
     /*Notas
     ES UN GRUPO POR HOJA
@@ -96,7 +97,6 @@ public class ControlConversor {
     }
 
     public void convertir() {
-        //String[] lineasEncAux = new String[13];
         materiaActual = materias.get(0);
         int saltos = 0;
 
@@ -109,28 +109,20 @@ public class ControlConversor {
 
         int contadorMateriasHoja = 1;
         guardarLineas(crearEncabezado());
-        //guardarLineas(crearMateria());
-        crearMateria(materiaActual);
-        //System.out.println(materiaActual);
+        guardarLineas(crearMateria(materiaActual));
 
         for (int i = 1; i < materias.size() - 1; i++) {
             numMateriaActual = i;
             materiaActual = materias.get(numMateriaActual);
-
             if (Integer.valueOf(materiaActual.getGrupo()) == grupoActual) {
-                crearMateria(materiaActual);
-                //System.out.println(materiaActual);
-                //guardarLineas(crearMateria());
+                guardarLineas(crearMateria(materiaActual));
                 contadorMateriasHoja++;
                 if (contadorMateriasHoja > MaxMateriaHoja) {
-                    //salto de hoja
                     saltos = 13;
                     guardarLineas(saltoDeHoja(saltos));
                     numPagActual++;
                     guardarLineas(crearEncabezado());
-                    crearMateria(materiaActual);
-                    //System.out.println(materiaActual);
-                    //guardarLineas(crearMateria());
+                    guardarLineas(crearMateria(materiaActual));
                     contadorMateriasHoja = 1;
                 }
             } else {
@@ -142,23 +134,26 @@ public class ControlConversor {
                 carreraActual = materiaActual.getNombrePE();
                 numCarreraActual = Integer.valueOf(materiaActual.getNumeroPE());
                 contadorMateriasHoja = 1;
-                crearEncabezado();
-                crearMateria(materiaActual);
-                //System.out.println(materiaActual);
+                guardarLineas(crearEncabezado());
+                guardarLineas(crearMateria(materiaActual));
             }
         }
     }
 
     public void generarArchivo() {
         String[] nombreExtension = archivo.getName().split("\\.");
-        String nomGuardado = nombreExtension[0] + "_MODIFICADO.txt";
+        String nomGuardado = nombreExtension[0] + "_Formato.txt";
         String[] dirAux = archivo.getPath().split(archivo.getName());
         String dirNueva = dirAux[0] + nomGuardado;
         System.out.println(dirNueva);
         File fichero = new File(dirNueva);
         if (fichero.exists()) {
             System.out.println("Ya existe el archivo: " + nomGuardado);
-        } else {
+            System.out.println("Se creara una copia");
+            nomGuardado+= nombreExtension[0] + "_Formato("+copiasExistentes+").txt";
+            copiasExistentes++;
+            dirNueva=dirAux[0] + nomGuardado;
+        } 
             try {
                 BufferedWriter bw = new BufferedWriter(new FileWriter(dirNueva));
                 for (int i = 0; i < lineas.size(); i++) {
@@ -169,7 +164,7 @@ public class ControlConversor {
                 Logger.getLogger(ControlConversor.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-        }
+        
     }
 
     public String[] crearEncabezado() {
@@ -179,7 +174,7 @@ public class ControlConversor {
         encabezado[2] = "                                               COORDINACION GENERAL DE RECURSOS HUMANOS\n";
         String paginaFTM = String.format("%3d", numPagActual);
         encabezado[3] = " RPLAN005                                           CUADRICULA DE HORARIOS                                                PAG.  " + paginaFTM + "\n";
-        encabezado[4] = "                                                        Periodo : f" + periodoActual() + "\n";
+        encabezado[4] = "                                                        Periodo : " + periodoActual() + "\n";
         encabezado[5] = "\n";
         String grupoFTM = String.format("%03d", grupoActual);
         encabezado[6] = " UNIDAD ACADEMICA: 105 FACULTAD DE INGENIERIA MXLI                                                               GRUPO: '" + grupoFTM + "' '   '" + "\n";
@@ -237,19 +232,20 @@ public class ControlConversor {
         String tipo = materia.getTipo();
         String subgrupo =materia.getSubGrupo();
         if(subgrupo.equals("")) subgrupo = " ";
-        String [] textoMateria = new String[3];
-        textoMateria[0] = espacios(69)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|";
+        String [] textoMateria = new String[4];
+        textoMateria[0] = espacios(69)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+"\n";
         textoMateria[1] =espacios(6)+claveAsig+espacios(2)+nombreMateria.substring(0,30)+" ";
         while(textoMateria[1].length()<59){
             textoMateria[1]+=" ";
         }
-        textoMateria[1]+= capacidad+espacios(2)+tipo+espacios(5)+"| "+horas.get(0).split("-")[0]+" | "+horas.get(1).split("-")[0]+" | "+horas.get(2).split("-")[0]+" | "+horas.get(3).split("-")[0]+" | "+horas.get(4).split("-")[0]+" | "+horas.get(5).split("-")[0]+" | "+horas.get(6).split("-")[0]+" | ";
+        textoMateria[1]+= capacidad+espacios(2)+tipo+espacios(5)+"| "+horas.get(0).split("-")[0]+" | "+horas.get(1).split("-")[0]+" | "+horas.get(2).split("-")[0]+" | "+horas.get(3).split("-")[0]+" | "+horas.get(4).split("-")[0]+" | "+horas.get(5).split("-")[0]+" | "+horas.get(6).split("-")[0]+" | "+"\n";
 
-        textoMateria[2] = " "+numeroControl+espacios(4)+numEmpleado+" "+nombreProfesor.substring(0,30)+"  "+edificio+espacios(4)+salon +espacios(7)+ subgrupo+espacios(5) + "| "+horas.get(0).split("-")[1]+" | "+horas.get(1).split("-")[1]+" | "+horas.get(2).split("-")[1]+" | "+horas.get(3).split("-")[1]+" | "+horas.get(4).split("-")[1]+" | "+horas.get(5).split("-")[1]+" | "+horas.get(6).split("-")[1]+" |  "+es;
+        textoMateria[2] = " "+numeroControl+espacios(4)+numEmpleado+" "+nombreProfesor.substring(0,30)+"  "+edificio+espacios(4)+salon +espacios(7)+ subgrupo+espacios(5) + "| "+horas.get(0).split("-")[1]+" | "+horas.get(1).split("-")[1]+" | "+horas.get(2).split("-")[1]+" | "+horas.get(3).split("-")[1]+" | "+horas.get(4).split("-")[1]+" | "+horas.get(5).split("-")[1]+" | "+horas.get(6).split("-")[1]+" |  "+es+"\n";
         System.out.println(textoMateria[0]);
         System.out.println(textoMateria[1]);
         System.out.println(textoMateria[2]);
         System.out.println(linea());
+        textoMateria[3]=linea()+"\n";
         return textoMateria;
     }
     public String acondicionarHoras(String hora){

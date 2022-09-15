@@ -6,7 +6,10 @@
 package computacionfim.conversorhorarios;
 
 import java.awt.FileDialog;
+import java.awt.Image;
 import java.io.File;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -16,11 +19,24 @@ public class InterfazConversor extends javax.swing.JFrame {
     String pathFile;
     String nameFile;
     File mainFile;
+    Icon load;
+    Icon ok;
+    Icon bug;
+    Icon add;
     /**
      * Creates new form InterfazConversor
      */
     public InterfazConversor() {
         initComponents();
+        ImageIcon img = new ImageIcon("src/res/fileLoadHD.png");
+        load = new ImageIcon(img.getImage().getScaledInstance(imgLBL.getWidth(), imgLBL.getHeight(), Image.SCALE_SMOOTH));
+        img=new ImageIcon("src/res/fileBugHD.png");
+        bug = new ImageIcon(img.getImage().getScaledInstance(imgLBL.getWidth(), imgLBL.getHeight(), Image.SCALE_SMOOTH));
+        img=new ImageIcon("src/res/fileOkHD.png");
+        ok = new ImageIcon(img.getImage().getScaledInstance(imgLBL.getWidth(), imgLBL.getHeight(), Image.SCALE_SMOOTH));
+        img=new ImageIcon("src/res/fileAddHD.png");
+        add = new ImageIcon(img.getImage().getScaledInstance(imgLBL.getWidth(), imgLBL.getHeight(), Image.SCALE_SMOOTH));
+        imgLBL.setIcon(add);
     }
 
     /**
@@ -32,53 +48,116 @@ public class InterfazConversor extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        explorador_FC = new javax.swing.JFileChooser();
         Control_CC = new computacionfim.conversorhorarios.ControlConversor();
         jPanel1 = new javax.swing.JPanel();
-        convertir_BTN = new javax.swing.JButton();
-        selector_BTN = new javax.swing.JButton();
         directorio_LBL = new javax.swing.JLabel();
         archivo_LBL = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        selector_BTN = new javax.swing.JButton();
+        imgLBL = new javax.swing.JLabel();
+        convertir_BTN = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLocationByPlatform(true);
         setResizable(false);
         setSize(new java.awt.Dimension(500, 300));
 
-        jPanel1.setBackground(java.awt.SystemColor.controlLtHighlight);
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        convertir_BTN.setBackground(new java.awt.Color(255, 51, 51));
-        convertir_BTN.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        convertir_BTN.setForeground(new java.awt.Color(255, 255, 255));
-        convertir_BTN.setText("CONVERTIR");
-        convertir_BTN.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                convertir_BTNActionPerformed(evt);
-            }
-        });
-        jPanel1.add(convertir_BTN, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 40, 150, -1));
-
-        selector_BTN.setBackground(new java.awt.Color(0, 153, 0));
-        selector_BTN.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        selector_BTN.setForeground(new java.awt.Color(255, 255, 255));
-        selector_BTN.setText("SELECCIONAR");
-        selector_BTN.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                selector_BTNActionPerformed(evt);
-            }
-        });
-        jPanel1.add(selector_BTN, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, -1));
+        jPanel1.setBackground(new java.awt.Color(84, 156, 73));
 
         directorio_LBL.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         directorio_LBL.setForeground(new java.awt.Color(51, 51, 51));
         directorio_LBL.setText("X:\\");
-            jPanel1.add(directorio_LBL, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, 470, -1));
 
             archivo_LBL.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
             archivo_LBL.setForeground(new java.awt.Color(51, 51, 51));
-            archivo_LBL.setText("Archivo:");
-            jPanel1.add(archivo_LBL, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, 470, 20));
+            archivo_LBL.setText(">");
+
+            jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+            selector_BTN.setBackground(new java.awt.Color(84, 156, 73));
+            selector_BTN.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+            selector_BTN.setForeground(new java.awt.Color(255, 255, 255));
+            selector_BTN.setText("Subir Archivo");
+            selector_BTN.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    selector_BTNActionPerformed(evt);
+                }
+            });
+
+            imgLBL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+            javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+            jPanel2.setLayout(jPanel2Layout);
+            jPanel2Layout.setHorizontalGroup(
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGap(48, 48, 48)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(selector_BTN, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                        .addComponent(imgLBL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addContainerGap(52, Short.MAX_VALUE))
+            );
+            jPanel2Layout.setVerticalGroup(
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                    .addGap(30, 30, 30)
+                    .addComponent(imgLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
+                    .addComponent(selector_BTN, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(30, 30, 30))
+            );
+
+            convertir_BTN.setBackground(new java.awt.Color(255, 51, 51));
+            convertir_BTN.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+            convertir_BTN.setForeground(new java.awt.Color(255, 255, 255));
+            convertir_BTN.setText("CONVERTIR");
+            convertir_BTN.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    convertir_BTNActionPerformed(evt);
+                }
+            });
+
+            jLabel1.setBackground(new java.awt.Color(51, 51, 51));
+            jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
+            jLabel1.setText("Nombre del Archivo:");
+
+            javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+            jPanel1.setLayout(jPanel1Layout);
+            jPanel1Layout.setHorizontalGroup(
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
+                            .addComponent(directorio_LBL)
+                            .addGap(319, 319, 319))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(50, 50, 50)
+                            .addComponent(convertir_BTN, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(18, 18, 18)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(archivo_LBL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE))
+                            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            );
+            jPanel1Layout.setVerticalGroup(
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(32, 32, 32)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(archivo_LBL)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(directorio_LBL)
+                    .addGap(118, 118, 118)
+                    .addComponent(convertir_BTN, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(30, 30, 30))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            );
 
             javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
             getContentPane().setLayout(layout);
@@ -88,7 +167,7 @@ public class InterfazConversor extends javax.swing.JFrame {
             );
             layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             );
 
             pack();
@@ -97,7 +176,10 @@ public class InterfazConversor extends javax.swing.JFrame {
     private void convertir_BTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertir_BTNActionPerformed
         boolean validFile=Control_CC.leerXLS(mainFile);
         if(!validFile){
-           archivo_LBL.setText(nameFile + " ARCHIVO NO VALIDO"); 
+           archivo_LBL.setText(nameFile + "\n Tipo de Archivo no valido."); 
+           imgLBL.setIcon(bug);
+        }else{
+            imgLBL.setIcon(ok);
         }
                 
     }//GEN-LAST:event_convertir_BTNActionPerformed
@@ -112,6 +194,7 @@ public class InterfazConversor extends javax.swing.JFrame {
                 nameFile=FD.getFile();
                 archivo_LBL.setText(nameFile);
                 directorio_LBL.setText(pathFile);
+                imgLBL.setIcon(load);
             }
     }//GEN-LAST:event_selector_BTNActionPerformed
 
@@ -155,8 +238,10 @@ public class InterfazConversor extends javax.swing.JFrame {
     private javax.swing.JLabel archivo_LBL;
     private javax.swing.JButton convertir_BTN;
     private javax.swing.JLabel directorio_LBL;
-    private javax.swing.JFileChooser explorador_FC;
+    private javax.swing.JLabel imgLBL;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JButton selector_BTN;
     // End of variables declaration//GEN-END:variables
 }
