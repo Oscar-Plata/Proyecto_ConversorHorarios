@@ -8,7 +8,6 @@ package computacionfim.conversorhorarios;
 import java.io.*;
 import java.util.*;
 import java.time.LocalDateTime;
-//import com.aspose.cells.*;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,6 +40,10 @@ public class ControlConversor {
     private int numMateriaActual;
     private Materia materiaActual;
     private int copiasExistentes=1;
+    // RESULTADOS
+    private boolean estado;
+    private String pathNew;
+    private String nameNew;
 
     /*Notas
     ES UN GRUPO POR HOJA
@@ -49,9 +52,20 @@ public class ControlConversor {
      */
     public ControlConversor() {
     }
+    
+    public boolean getEstado(){
+        return estado;
+    }
+    public String getPathNew(){
+        return pathNew;
+    }
+    public String getNameNew(){
+        return nameNew;
+    }
 
     public boolean leerXLS(File file) {
         if(file==null){
+            estado=false;
             return false;
         }
         archivo = file;
@@ -60,6 +74,7 @@ public class ControlConversor {
         //VERIFICAR EXTENSION DEL ARCHIVO
         String[] nombreExtension = file.getName().split("\\.");
         if (!(nombreExtension[1].equalsIgnoreCase("xlsx") || nombreExtension[1].equalsIgnoreCase("xls"))) {
+            estado=false;
             return false;
         }
         System.out.println(">> Formato correcto");
@@ -92,7 +107,7 @@ public class ControlConversor {
         } catch (IOException ex) {
             Logger.getLogger(ControlConversor.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        estado=true;
         return true;
     }
 
@@ -150,7 +165,7 @@ public class ControlConversor {
         if (fichero.exists()) {
             System.out.println("Ya existe el archivo: " + nomGuardado);
             System.out.println("Se creara una copia");
-            nomGuardado+= nombreExtension[0] + "_Formato("+copiasExistentes+").txt";
+            nomGuardado= nombreExtension[0] + "_Formato("+copiasExistentes+").txt";
             copiasExistentes++;
             dirNueva=dirAux[0] + nomGuardado;
         } 
@@ -163,8 +178,8 @@ public class ControlConversor {
             } catch (IOException ex) {
                 Logger.getLogger(ControlConversor.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-        
+            pathNew=dirNueva;
+            nameNew=nomGuardado;
     }
 
     public String[] crearEncabezado() {
@@ -220,7 +235,7 @@ public class ControlConversor {
             numEmpleado=cero+numEmpleado2;
         }
         String nombreMateria = materia.getNombreUA();
-        while(nombreMateria.length()<43) nombreMateria+=" ";
+        while(nombreMateria.length()<46) nombreMateria+=" ";
         
         String nombreProfesor=  materia.getNombreEmpleado();
         while(nombreProfesor.length()<31) nombreProfesor+=" ";
