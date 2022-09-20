@@ -248,7 +248,7 @@ public class ControlConversor {
         String tipo = materia.getTipo();
         String subgrupo =materia.getSubGrupo();
         if(subgrupo.equals("")) subgrupo = " ";
-        String [] textoMateria = new String[3];
+        String [] textoMateria = new String[4];
         textoMateria[0] = espacios(69)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|";
         textoMateria[1] =espacios(6)+claveAsig+espacios(3)+nombreMateria;
         /*if(textoMateria[1].length()<51) System.out.println("Si es menor a 51");
@@ -262,6 +262,7 @@ public class ControlConversor {
         System.out.println(textoMateria[0]);
         System.out.println(textoMateria[1]);
         System.out.println(textoMateria[2]);
+        textoMateria[3] = linea();
         System.out.println(linea());
         return textoMateria;
     }
