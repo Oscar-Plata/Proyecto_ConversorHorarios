@@ -249,20 +249,20 @@ public class ControlConversor {
         String subgrupo =materia.getSubGrupo();
         if(subgrupo.equals("")) subgrupo = " ";
         String [] textoMateria = new String[4];
-        textoMateria[0] = espacios(69)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|";
+        textoMateria[0] = espacios(69)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|\n";
         textoMateria[1] =espacios(6)+claveAsig+espacios(3)+nombreMateria;
         /*if(textoMateria[1].length()<51) System.out.println("Si es menor a 51");
         while(textoMateria[1].length()<51){
             textoMateria[1]+=" ";
         }*/
         
-        textoMateria[1]+= capacidad+espacios(2)+tipo+espacios(5)+"| "+horas.get(0).split("-")[0]+" | "+horas.get(1).split("-")[0]+" | "+horas.get(2).split("-")[0]+" | "+horas.get(3).split("-")[0]+" | "+horas.get(4).split("-")[0]+" | "+horas.get(5).split("-")[0]+" | "+horas.get(6).split("-")[0]+" | ";
+        textoMateria[1]+= capacidad+espacios(2)+tipo+espacios(5)+"| "+horas.get(0).split("-")[0]+" | "+horas.get(1).split("-")[0]+" | "+horas.get(2).split("-")[0]+" | "+horas.get(3).split("-")[0]+" | "+horas.get(4).split("-")[0]+" | "+horas.get(5).split("-")[0]+" | "+horas.get(6).split("-")[0]+" | \n";
 
-        textoMateria[2] = " "+numeroControl+espacios(4)+numEmpleado+" "+nombreProfesor.substring(0,30)+"  "+edificio+espacios(4)+salon +espacios(7)+ subgrupo+espacios(5) + "| "+horas.get(0).split("-")[1]+" | "+horas.get(1).split("-")[1]+" | "+horas.get(2).split("-")[1]+" | "+horas.get(3).split("-")[1]+" | "+horas.get(4).split("-")[1]+" | "+horas.get(5).split("-")[1]+" | "+horas.get(6).split("-")[1]+" |  "+es;
+        textoMateria[2] = " "+numeroControl+espacios(4)+numEmpleado+" "+nombreProfesor.substring(0,30)+"  "+edificio+espacios(4)+salon +espacios(7)+ subgrupo+espacios(5) + "| "+horas.get(0).split("-")[1]+" | "+horas.get(1).split("-")[1]+" | "+horas.get(2).split("-")[1]+" | "+horas.get(3).split("-")[1]+" | "+horas.get(4).split("-")[1]+" | "+horas.get(5).split("-")[1]+" | "+horas.get(6).split("-")[1]+" |  "+es+"\n";
         System.out.println(textoMateria[0]);
         System.out.println(textoMateria[1]);
         System.out.println(textoMateria[2]);
-        textoMateria[3] = linea();
+        textoMateria[3] = linea()+"\n";
         System.out.println(linea());
         return textoMateria;
     }
