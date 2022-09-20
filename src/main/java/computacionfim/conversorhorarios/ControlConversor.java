@@ -234,20 +234,26 @@ public class ControlConversor {
             cero+="0";
             numEmpleado=cero+numEmpleado2;
         }
-        String nombreMateria = materia.getNombreUA();
-        while(nombreMateria.length()<45) nombreMateria+=" ";
-        nombreMateria = nombreMateria.substring(0,42);
-        while(nombreMateria.length()<45) nombreMateria+=" ";
+        String nombreMateria = materia.getNombreUA().trim();
+        String nomMatOrg=materia.getNombreUA().trim();
+        while(nombreMateria.length()<46) nombreMateria+=" ";
+        nombreMateria = nombreMateria.substring(0,45);
+//        while(nombreMateria.length()<45) nombreMateria+=" ";
         String nombreProfesor=  materia.getNombreEmpleado();
         while(nombreProfesor.length()<31) nombreProfesor+=" ";
         
         String edificio = materia.getEdificio();
         String salon = materia.getSalon();
         String capacidad=materia.getCapacidad();
+        String capOrg=materia.getCapacidad();
         if(capacidad.length()<2) capacidad = " "+capacidad;
         String tipo = materia.getTipo();
         String subgrupo =materia.getSubGrupo();
         if(subgrupo.equals("")) subgrupo = " ";
+        if(nomMatOrg.length()>45 && capOrg.length()<2){
+            nombreMateria = nomMatOrg;
+            capacidad=capOrg.trim();
+        }
         String [] textoMateria = new String[4];
         textoMateria[0] = espacios(69)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|\n";
         textoMateria[1] =espacios(6)+claveAsig+espacios(3)+nombreMateria;
