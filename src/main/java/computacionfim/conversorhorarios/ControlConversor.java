@@ -253,6 +253,7 @@ public class ControlConversor {
         if(nomMatOrg.length()>45 && capOrg.length()<2){
             nombreMateria = nomMatOrg;
             capacidad=capOrg.trim();
+            nombreMateria = nombreMateria.substring(0,46);
         }
         String [] textoMateria = new String[4];
         textoMateria[0] = espacios(69)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|"+espacios(7)+"|\n";
@@ -310,7 +311,10 @@ public class ControlConversor {
     //Obtener la Hora Actual
     public String hora() {
         LocalDateTime ahora = LocalDateTime.now();
-        return String.valueOf(ahora.getHour()) + ":" + String.valueOf(ahora.getMinute()) + ":" + String.valueOf(ahora.getSecond());
+         String hora = String.format("%02d", ahora.getHour());
+         String min = String.format("%02d", ahora.getMinute());
+         String seg = String.format("%02d", ahora.getSecond());
+        return hora + ":" + min + ":" + seg;
     }
 
     //Obtener la Fecha Actual
